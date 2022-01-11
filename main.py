@@ -1,5 +1,7 @@
 import wx
+
 import clock_panel
+import configuration
 
 app_title = 'Kid Clock'
 
@@ -15,8 +17,14 @@ class MainFrame(wx.Frame):
     # self.text_ctrl = wx.TextCtrl(panel)
     # press_btn = wx.Button(panel, label='Click me')
     # press_btn.Bind(wx.EVT_BUTTON, self.press_btn_on_press)
+    config = configuration.Config()
+    wakeup = config.get_wakeup_time()
+    sleep = config.get_sleep_time()
 
-    clock = clock_panel.ClockPanel(panel)
+    print(f'wakeup hour {wakeup.hour} min {wakeup.minute}')
+    print(f'sleep hour {sleep.hour} min {sleep.minute}')
+
+    clock = clock_panel.ClockPanel(panel, wakeup_time=wakeup, sleep_time=sleep)
     sizer.Add(clock, 0, wx.ALL | wx.EXPAND, 1)
 
     # box_sizer.Add(self.text_ctrl, 0, wx.ALL | wx.EXPAND, 5)
@@ -26,13 +34,6 @@ class MainFrame(wx.Frame):
     panel.SetSizer(sizer)
 
     self.Show()
-
-  def press_btn_on_press(self, event):
-    value = self.text_ctrl.GetValue()
-    if not value:
-      print("No value")
-    else:
-      print(f'You typed: "{value}"')
 
 
 if __name__ == '__main__':

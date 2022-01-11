@@ -2,19 +2,23 @@ import wx
 import datetime
 
 class ClockPanel(wx.Panel):
-  def __init__(self, parent):
+  def __init__(self, parent, wakeup_time, sleep_time):
     super().__init__(parent)
      # set our minimum size based on the text with
     dc = wx.MemoryDC()
     self.width, self.height= (200, 200)
     # height and width are reversed since we are drawing text vertically
     self.SetMinSize((self.height,self.width)) 
+    self.wakeup_time = wakeup_time
+    self.sleep_time = sleep_time
+    self.bg_colour = wx.GREEN
+
     self.InitUI()
     self.InitTimer()
 
   def InitUI(self):
     self.SetBackgroundStyle(wx.BG_STYLE_CUSTOM)
-    self.SetBackgroundColour(wx.GREEN)
+    self.SetBackgroundColour(self.bg_colour)
     self.Bind(wx.EVT_PAINT, self.OnPaint)
     self.Bind(wx.EVT_SIZE, self.OnSize)
 
@@ -31,6 +35,15 @@ class ClockPanel(wx.Panel):
 
   def OnTimer(self, event):
     dc = wx.AutoBufferedPaintDC(self)
+
+    now_time = datetime.datetime.now().time()
+    now_time = datetime.datetime(2022,1,11,20,1,0).time()
+    if now_time > self.sleep_time:
+      self.bg_colour = wx.RED
+    
+    if now_time > self.wakeup_time:
+      self.bg_colour = wx.GREEN
+
     self.Repaint(dc)
 
   def Repaint(self, dc):
