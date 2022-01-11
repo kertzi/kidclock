@@ -9,20 +9,21 @@ class MainFrame(wx.Frame):
     # self.SetClientSize(500,500)
     panel = wx.Panel(self)
 
-    box_sizer = wx.BoxSizer(wx.VERTICAL)
+    # sizer = wx.BoxSizer(wx.VERTICAL)
+    sizer = wx.GridSizer(1, 1, 1)
 
     # self.text_ctrl = wx.TextCtrl(panel)
     # press_btn = wx.Button(panel, label='Click me')
     # press_btn.Bind(wx.EVT_BUTTON, self.press_btn_on_press)
 
     clock = clock_panel.ClockPanel(panel)
-    box_sizer.Add(clock, 0, wx.ALL | wx.EXPAND, 1)
+    sizer.Add(clock, 0, wx.ALL | wx.EXPAND, 1)
 
     # box_sizer.Add(self.text_ctrl, 0, wx.ALL | wx.EXPAND, 5)
     # box_sizer.Add(press_btn, 0, wx.ALL | wx.CENTER, 5)
     # box_sizer.Add(clock, 0, wx.ALL | wx.EXPAND, 5)
 
-    panel.SetSizer(box_sizer)
+    panel.SetSizer(sizer)
 
     self.Show()
 
