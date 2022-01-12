@@ -1,17 +1,26 @@
 import wx
 import datetime
 
+# Contrast picker: https://www.thoughtco.com/contrasting-foreground-background-colors-4061363
+
+# For Green background
+GRAY_COLOR = wx.Colour(105,105,105)
+# For Red background
+YELLOW_COLOR = wx.Colour(255,238,0)
+
 class ClockPanel(wx.Panel):
-  def __init__(self, parent, wakeup_time, sleep_time):
+  def __init__(self, parent, wakeup_time, sleep_time, font_size=50):
     super().__init__(parent)
-     # set our minimum size based on the text with
+    # set our minimum size based on the text with
     dc = wx.MemoryDC()
     self.width, self.height= (200, 200)
     # height and width are reversed since we are drawing text vertically
     self.SetMinSize((self.height,self.width)) 
     self.wakeup_time = wakeup_time
     self.sleep_time = sleep_time
-    self.bg_colour = wx.GREEN
+    self.bg_colour = wx.Colour(0,0,0)
+    self.fg_colour = GRAY_COLOR
+    self.font_size = font_size
 
     self.InitUI()
     self.InitTimer()
@@ -33,23 +42,36 @@ class ClockPanel(wx.Panel):
     self.Repaint(dc)
     event.Skip()
 
+  def SetWakeupColours(self):
+    self.bg_colour = wx.GREEN
+    self.fg_colour = GRAY_COLOR
+
+  def SetSleepColours(self):
+    self.bg_colour = wx.RED
+    self.fg_colour = YELLOW_COLOR
+
   def OnTimer(self, event):
     dc = wx.AutoBufferedPaintDC(self)
 
-    now_time = datetime.datetime.now().time()
-    now_time = datetime.datetime(2022,1,11,20,1,0).time()
-    if now_time > self.sleep_time:
-      self.bg_colour = wx.RED
-    
-    if now_time > self.wakeup_time:
-      self.bg_colour = wx.GREEN
+    now= datetime.datetime.now()
+    now = datetime.datetime(2022,1,12,7,5,1)
+
+    sleep = now.replace(hour=self.sleep_time.hour, minute=self.sleep_time.minute, second=0)
+    wakeup = now.replace(hour=self.wakeup_time.hour, minute=self.wakeup_time.minute, second=0)
+
+    if now > wakeup and now < sleep:
+      # in wakeup time
+      self.SetWakeupColours()
+    else:
+      # in sleep time
+      self.SetSleepColours()
 
     self.Repaint(dc)
 
   def Repaint(self, dc):
     width, height = self.GetClientSize()
     
-    font = wx.Font(wx.FontInfo(50).Family(wx.FONTFAMILY_ROMAN).Bold())
+    font = wx.Font(wx.FontInfo(self.font_size).Family(wx.FONTFAMILY_ROMAN).Bold())
     dc.SetFont(font)
 
     time_str = self.GetTimeStr()
@@ -59,7 +81,8 @@ class ClockPanel(wx.Panel):
     text_y = (height / 2) - (text_height / 2)
     
     dc.Clear()
-    dc.SetTextForeground(wx.WHITE)
+    dc.SetTextForeground(self.fg_colour)
+    self.SetBackgroundColour(self.bg_colour)
     dc.DrawText(time_str, text_x, text_y)
 
   def GetTimeStr(self):

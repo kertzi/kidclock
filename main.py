@@ -11,25 +11,18 @@ class MainFrame(wx.Frame):
     # self.SetClientSize(500,500)
     panel = wx.Panel(self)
 
-    # sizer = wx.BoxSizer(wx.VERTICAL)
     sizer = wx.GridSizer(1, 1, 1)
 
-    # self.text_ctrl = wx.TextCtrl(panel)
-    # press_btn = wx.Button(panel, label='Click me')
-    # press_btn.Bind(wx.EVT_BUTTON, self.press_btn_on_press)
     config = configuration.Config()
     wakeup = config.get_wakeup_time()
     sleep = config.get_sleep_time()
+    font_size = config.get_clock_font_size()
 
-    print(f'wakeup hour {wakeup.hour} min {wakeup.minute}')
-    print(f'sleep hour {sleep.hour} min {sleep.minute}')
+    print(f'wakeup time: {wakeup.hour}:{wakeup.minute}')
+    print(f'sleep time: {sleep.hour}:{sleep.minute}')
 
-    clock = clock_panel.ClockPanel(panel, wakeup_time=wakeup, sleep_time=sleep)
-    sizer.Add(clock, 0, wx.ALL | wx.EXPAND, 1)
-
-    # box_sizer.Add(self.text_ctrl, 0, wx.ALL | wx.EXPAND, 5)
-    # box_sizer.Add(press_btn, 0, wx.ALL | wx.CENTER, 5)
-    # box_sizer.Add(clock, 0, wx.ALL | wx.EXPAND, 5)
+    clock = clock_panel.ClockPanel(panel, wakeup_time=wakeup, sleep_time=sleep, font_size=font_size)
+    sizer.Add(clock, 0, wx.ALL | wx.EXPAND, 5)
 
     panel.SetSizer(sizer)
 

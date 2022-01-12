@@ -1,6 +1,8 @@
 import configparser
 import datetime
 
+from wx.core import Log, LogError, LogWarning
+
 class Config:
   def __init__(self):
     self.config = configparser.ConfigParser()
@@ -8,12 +10,10 @@ class Config:
 
   def remove_invalid_chars(self, str):
     result = str.strip('"')
-    print(f'result after 1: {result}')
 
     if str.startswith('0') and not str.endswith('0'):
       result = result[1:]
 
-    print(f'result after 2: {result}')
     return result
 
   def get_wakeup_time(self):
@@ -42,3 +42,12 @@ class Config:
 
     dt = datetime.time(hour=hour, minute=min)
     return dt
+
+  def get_clock_font_size(self):
+    try:
+      size_str = self.config.get('general', 'ClockFontSize')
+      return int(size_str.strip('"'))
+    except configparser.NoOptionError as noOpt:
+      LogWarning("ClockFontSize option missing from config.ini, using default")
+      return 50
+    
